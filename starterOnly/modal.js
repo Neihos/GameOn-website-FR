@@ -1,11 +1,14 @@
 function editNav() {
   var x = document.getElementById("myTopnav");
+  var navBar = document.querySelector(".main-navbar"); // added variable for navbar access
   if (x.className === "topnav") {
     x.className += " responsive";
   } else {
     x.className = "topnav";
   }
+  navBar.classList.toggle("open"); // Added a function to add or remove the "open" class
 }
+
 
 // DOM Elements
 const modalbg = document.querySelector(".bground");
@@ -24,7 +27,7 @@ function launchModal() {
 // close modal form
 function closeModal() {
   cross.addEventListener("click", (event) => {
-    modalbg.style.display = "none";
+    modalbg.style.display = "none"; // Added display none to hide the modal
   });
 }
 closeModal();
