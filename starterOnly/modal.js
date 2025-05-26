@@ -9,7 +9,6 @@ function editNav() {
   navBar.classList.toggle("open"); // Added a function to add or remove the "open" class
 }
 
-
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
@@ -34,7 +33,7 @@ closeModal();
 
 function validate(event) {
   event.preventDefault();
-  
+
   let isValid = true;
 
   // Fields
@@ -75,115 +74,139 @@ function validate(event) {
   });
 
   // First name validation
-  if (first.value.trim().length < 2) {
-    firstContainer.setAttribute(
-      "data-error",
-      "Le prénom doit contenir au moins 2 lettres."
-    );
-    firstContainer.setAttribute("data-error-visible", "true");
-    isValid = false;
+  function firstNameCheck() {
+    if (first.value.trim().length < 2) {
+      firstContainer.setAttribute(
+        "data-error",
+        "Le prénom doit contenir au moins 2 lettres."
+      );
+      firstContainer.setAttribute("data-error-visible", "true");
+      isValid = false;
+    }
   }
+  firstNameCheck();
 
   // Validation name
-  if (last.value.trim().length < 2) {
-    lastContainer.setAttribute(
-      "data-error",
-      "Le nom doit contenir au moins 2 lettres."
-    );
-    lastContainer.setAttribute("data-error-visible", "true");
-    isValid = false;
+  function nameCheck() {
+    if (last.value.trim().length < 2) {
+      lastContainer.setAttribute(
+        "data-error",
+        "Le nom doit contenir au moins 2 lettres."
+      );
+      lastContainer.setAttribute("data-error-visible", "true");
+      isValid = false;
+    }
   }
+  nameCheck();
 
   // Validation email
-  const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-  if (!emailPattern.test(email.value.trim())) {
-    emailContainer.setAttribute(
-      "data-error",
-      "Veuillez entrer une adresse email valide."
-    );
-    emailContainer.setAttribute("data-error-visible", "true");
-    isValid = false;
+  function emailCheck() {
+    const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailPattern.test(email.value.trim())) {
+      emailContainer.setAttribute(
+        "data-error",
+        "Veuillez entrer une adresse email valide."
+      );
+      emailContainer.setAttribute("data-error-visible", "true");
+      isValid = false;
+    }
   }
+  emailCheck();
 
   // Validation date of birth
-  if (!birthdate.value) {
-    birthdateContainer.setAttribute(
-      "data-error",
-      "Vous devez entrer votre date de naissance."
-    );
-    birthdateContainer.setAttribute("data-error-visible", "true");
-    isValid = false;
-  } else {
-    const today = new Date();
-    const birthDate = new Date(birthdate.value);
-
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const hasBirthdayPassed =
-      today.getMonth() > birthDate.getMonth() ||
-      (today.getMonth() === birthDate.getMonth() &&
-        today.getDate() >= birthDate.getDate());
-    const exactAge = hasBirthdayPassed ? age : age - 1;
-
-    if (exactAge < 16 || exactAge > 150) {
+  function birthCheck() {
+    if (!birthdate.value) {
       birthdateContainer.setAttribute(
         "data-error",
-        "Vous devez avoir entre 16 et 150 ans."
+        "Vous devez entrer votre date de naissance."
       );
       birthdateContainer.setAttribute("data-error-visible", "true");
       isValid = false;
     } else {
-      birthdateContainer.removeAttribute("data-error");
-      birthdateContainer.setAttribute("data-error-visible", "false");
+      const today = new Date();
+      const birthDate = new Date(birthdate.value);
+
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const hasBirthdayPassed =
+        today.getMonth() > birthDate.getMonth() ||
+        (today.getMonth() === birthDate.getMonth() &&
+          today.getDate() >= birthDate.getDate());
+      const exactAge = hasBirthdayPassed ? age : age - 1;
+
+      if (exactAge < 16 || exactAge > 150) {
+        birthdateContainer.setAttribute(
+          "data-error",
+          "Vous devez avoir entre 16 et 150 ans."
+        );
+        birthdateContainer.setAttribute("data-error-visible", "true");
+        isValid = false;
+      } else {
+        birthdateContainer.removeAttribute("data-error");
+        birthdateContainer.setAttribute("data-error-visible", "false");
+      }
     }
-  }  
+  }
+  birthCheck();
 
   // Validation quantity
-  const quantityValue = quantity.value.trim();
-  if (
-    quantityValue === "" ||
-    isNaN(quantityValue) ||
-    Number(quantityValue) < 0
-  ) {
-    quantityContainer.setAttribute(
-      "data-error",
-      "Veuillez entrer un nombre valide (0 ou plus)."
-    );
-    quantityContainer.setAttribute("data-error-visible", "true");
-    isValid = false;
+  function quantityCheck() {
+    const quantityValue = quantity.value.trim();
+    if (
+      quantityValue === "" ||
+      isNaN(quantityValue) ||
+      Number(quantityValue) < 0
+    ) {
+      quantityContainer.setAttribute(
+        "data-error",
+        "Veuillez entrer un nombre valide (0 ou plus)."
+      );
+      quantityContainer.setAttribute("data-error-visible", "true");
+      isValid = false;
+    }
   }
+  quantityCheck();
 
   // Validation city (radio)
-  let locationSelected = false;
-  locationRadios.forEach((radio) => {
-    if (radio.checked) locationSelected = true;
-  });
-  if (!locationSelected) {
-    locationContainer.setAttribute(
-      "data-error",
-      "Veuillez sélectionner une ville."
-    );
-    locationContainer.setAttribute("data-error-visible", "true");
-    isValid = false;
+  function radioCheck() {
+    let locationSelected = false;
+    locationRadios.forEach((radio) => {
+      if (radio.checked) locationSelected = true;
+    });
+    if (!locationSelected) {
+      locationContainer.setAttribute(
+        "data-error",
+        "Veuillez sélectionner une ville."
+      );
+      locationContainer.setAttribute("data-error-visible", "true");
+      isValid = false;
+    }
   }
+  radioCheck();
 
   // Validation of the conditions of use
-  if (!checkbox1.checked) {
-    label1.setAttribute(
-      "data-error",
-      "Vous devez accepter les conditions d'utilisation."
-    );
-    label1.setAttribute("data-error-visible", "true");
-    isValid = false;
+  function conditionsCheck() {
+    if (!checkbox1.checked) {
+      label1.setAttribute(
+        "data-error",
+        "Vous devez accepter les conditions d'utilisation."
+      );
+      label1.setAttribute("data-error-visible", "true");
+      isValid = false;
+    }
   }
-  
-  // confirmation message
-  if (isValid) {
-    const form = document.forms["reserve"];
-    form.style.display = "none";
+  conditionsCheck();
 
-    const confirmation = document.querySelector("#successMessage");
-    confirmation.style.display = "flex";
+  // confirmation message
+  function confirmationCheck() {
+    if (isValid) {
+      const form = document.forms["reserve"];
+      form.style.display = "none";
+
+      const confirmation = document.querySelector("#successMessage");
+      confirmation.style.display = "flex";
+    }
   }
+  confirmationCheck();
 
   return isValid;
 }
