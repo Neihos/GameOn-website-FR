@@ -1,5 +1,5 @@
 function editNav() {
-  var x = document.getElementById("myTopnav");
+  var x = document.querySelector("#myTopnav");
   var navBar = document.querySelector(".main-navbar"); // added variable for navbar access
   if (x.className === "topnav") {
     x.className += " responsive";
@@ -32,45 +32,49 @@ function closeModal() {
 }
 closeModal();
 
-function validate() {
+function validate(event) {
+  event.preventDefault();
+  
   let isValid = true;
 
-  // Champs
-  const first = document.getElementById("first");
-  const last = document.getElementById("last");
-  const email = document.getElementById("email");
-  const birthdate = document.getElementById("birthdate");
-  const quantity = document.getElementById("quantity");
-  const checkbox1 = document.getElementById("checkbox1");
+  // Fields
+  const first = document.querySelector("#first");
+  const last = document.querySelector("#last");
+  const email = document.querySelector("#email");
+  const birthdate = document.querySelector("#birthdate");
+  const quantity = document.querySelector("#quantity");
+  const checkbox1 = document.querySelector("#checkbox1");
 
-  // Conteneurs
+  // Containers
   const firstContainer = first.closest(".formData");
   const lastContainer = last.closest(".formData");
   const emailContainer = email.closest(".formData");
-  const birthdateContainer = document.getElementById("birthdate-container");
-  const quantityContainer = document.getElementById("quantity-container");
-  const locationContainer = document.getElementById("location-container");
-  const conditionsContainer = document.getElementById("conditions-container");
+  const birthdateContainer = document.querySelector("#birthdate-container");
+  const quantityContainer = document.querySelector("#quantity-container");
+  const locationContainer = document.querySelector("#location-container");
 
-  // Boutons radio
+  // Radio buttons
   const locationRadios = document.querySelectorAll('input[name="location"]');
 
-  // Réinitialisation des erreurs
-  const containers = [
+  // Labels
+  const label1 = document.querySelector('label[for="checkbox1"]');
+
+  // Resetting errors
+  const validateElements = [
     firstContainer,
     lastContainer,
     emailContainer,
     birthdateContainer,
     quantityContainer,
     locationContainer,
-    conditionsContainer,
+    label1,
   ];
-  containers.forEach((container) => {
-    container.removeAttribute("data-error");
-    container.removeAttribute("data-error-visible");
+  validateElements.forEach((el) => {
+    el.removeAttribute("data-error");
+    el.removeAttribute("data-error-visible");
   });
 
-  // Validation prénom
+  // First name validation
   if (first.value.trim().length < 2) {
     firstContainer.setAttribute(
       "data-error",
@@ -80,7 +84,7 @@ function validate() {
     isValid = false;
   }
 
-  // Validation nom
+  // Validation name
   if (last.value.trim().length < 2) {
     lastContainer.setAttribute(
       "data-error",
@@ -101,7 +105,7 @@ function validate() {
     isValid = false;
   }
 
-  // Validation date de naissance
+  // Validation date of birth
   if (!birthdate.value) {
     birthdateContainer.setAttribute(
       "data-error",
@@ -109,9 +113,31 @@ function validate() {
     );
     birthdateContainer.setAttribute("data-error-visible", "true");
     isValid = false;
-  }
+  } else {
+    const today = new Date();
+    const birthDate = new Date(birthdate.value);
 
-  // Validation quantité
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const hasBirthdayPassed =
+      today.getMonth() > birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() &&
+        today.getDate() >= birthDate.getDate());
+    const exactAge = hasBirthdayPassed ? age : age - 1;
+
+    if (exactAge < 16 || exactAge > 150) {
+      birthdateContainer.setAttribute(
+        "data-error",
+        "Vous devez avoir entre 16 et 150 ans."
+      );
+      birthdateContainer.setAttribute("data-error-visible", "true");
+      isValid = false;
+    } else {
+      birthdateContainer.removeAttribute("data-error");
+      birthdateContainer.setAttribute("data-error-visible", "false");
+    }
+  }  
+
+  // Validation quantity
   const quantityValue = quantity.value.trim();
   if (
     quantityValue === "" ||
@@ -126,7 +152,7 @@ function validate() {
     isValid = false;
   }
 
-  // Validation ville (radio)
+  // Validation city (radio)
   let locationSelected = false;
   locationRadios.forEach((radio) => {
     if (radio.checked) locationSelected = true;
@@ -140,14 +166,23 @@ function validate() {
     isValid = false;
   }
 
-  // Validation conditions d’utilisation
+  // Validation of the conditions of use
   if (!checkbox1.checked) {
-    conditionsContainer.setAttribute(
+    label1.setAttribute(
       "data-error",
       "Vous devez accepter les conditions d'utilisation."
     );
-    conditionsContainer.setAttribute("data-error-visible", "true");
+    label1.setAttribute("data-error-visible", "true");
     isValid = false;
+  }
+  
+  // confirmation message
+  if (isValid) {
+    const form = document.forms["reserve"];
+    form.style.display = "none";
+
+    const confirmation = document.querySelector("#successMessage");
+    confirmation.style.display = "flex";
   }
 
   return isValid;
