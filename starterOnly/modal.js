@@ -12,6 +12,7 @@ function editNav() {
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
+const btnCloseModal = document.querySelector(".closeModal")
 const formData = document.querySelectorAll(".formData");
 const cross = document.querySelector(".close");
 
@@ -25,8 +26,12 @@ function launchModal() {
 
 // close modal form
 function closeModal() {
-  cross.addEventListener("click", (event) => {
-    modalbg.style.display = "none"; // Added display none to hide the modal
+  const closeButtons = [cross, btnCloseModal];
+
+  closeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      modalbg.style.display = "none"; // Added display none to hide the modal
+    });
   });
 }
 closeModal();
